@@ -15,19 +15,16 @@ wallets = {'FUBRMGmBd4YQ4wCvtF1aJ2Qt8EDSY8mH2fprTE6F7r2e',  # President
            }
 trackers = []
 previousAddress = {}
+for wallet in wallets:
+    previousAddress[wallet] = wt.test(wallet)
+    trackers.append(walletTracker(wallet, previousAddress[wallet]))
+print("Server is running...")
 
 
 @app.route('/')
 def main():
-    for wallet in wallets:
-        previousAddress[wallet] = wt.test(wallet)
-        trackers.append(walletTracker(wallet, previousAddress[wallet]))
-    print("Server is running...")
-    while True:
-        print("Checking...")
-        for i in range(len(trackers)):
-            trackers[i].previousAddress = wt.start(trackers[i].wallet,
-                                                   trackers[i].previousAddress)
-        # wt.test()
-        time.sleep(60)
-    return "<h1>WALLET TRACKER IS WORKING...</h1>"
+    print("Checking...")
+    for i in range(len(trackers)):
+        trackers[i].previousAddress = wt.start(trackers[i].wallet,
+                                               trackers[i].previousAddress)
+    # wt.test()    return "<h1>WALLET TRACKER IS WORKING...</h1>"
