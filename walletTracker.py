@@ -1,4 +1,3 @@
-# %%
 import requests
 import pandas as pd
 import json
@@ -52,12 +51,13 @@ def requestJson():
     return df
 
 
-def checkForNewBuy(data):
+def checkForNewBuy(previousAddress):
     df = requestJson()
     if df['token_address'][0]==previousAddress:
-        return False, None
+        return False, None, previousAddress
     else:
-        return True, df
+        previousAddress=df['token_address'][0]
+        return True, df, previousAddress
 
 
 def createWebhook(df):
@@ -72,15 +72,16 @@ def createWebhook(df):
     webhook.add_embed(embed)
     response=webhook.execute()
 
-def start():
+def start(previousAddress):
     df=requestJson()
-    check, df2=checkForNewBuy(df)
+    check, df2, prevAddress=checkForNewBuy(previousAddress)
     if check:
         createWebhook(df2)
     else:
         pass
-    return
+    return prevAddress
 
 def test():
     df=requestJson()
     createWebhook(df)
+    return df['token_address'][0]

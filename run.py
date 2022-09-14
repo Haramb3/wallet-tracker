@@ -8,10 +8,10 @@ app = Flask(__name__)
 @app.route('/')
 def main():
     print("Server is running...")
-    wt.test()
+    previousAddress = wt.test()
     while True:
         print("Checking...")
-        wt.start()
+        previousAddress=wt.start(previousAddress)
         #wt.test()
         time.sleep(60)
     return 'Server Stopped.'
