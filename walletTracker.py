@@ -1,12 +1,10 @@
 import requests
 import pandas as pd
 import json
-from discord_webhook import DiscordWebhook,DiscordEmbed
+from discord_webhook import DiscordWebhook, DiscordEmbed
 
-walletToTrack = 'FUBRMGmBd4YQ4wCvtF1aJ2Qt8EDSY8mH2fprTE6F7r2e'
-previousAddress='4Mp1kRqaohTG1PfFpRH3jNqgPos2V8aveHq5nYoFJNTR'
 
-def requestJson():
+def requestJson(walletToTrack):
     headers = {
         'authority': 'beta.api.solanalysis.com',
         'accept': '*/*',
@@ -51,37 +49,40 @@ def requestJson():
     return df
 
 
-def checkForNewBuy(previousAddress):
-    df = requestJson()
-    if df['token_address'][0]==previousAddress:
+def checkForNewBuy(wallet, previousAddress):
+    df = requestJson(wallet)
+    if df['token_address'][0] == previousAddress:
         return False, None, previousAddress
     else:
-        previousAddress=df['token_address'][0]
+        previousAddress = df['token_address'][0]
         return True, df, previousAddress
 
 
 def createWebhook(df):
-    url="https://discord.com/api/webhooks/1019444725306101850/g56rjoqTQNWufyOzSqUC2iZ91VP-C1nz3dPtZoqaHYLx_UXRN1ZcQfPhqjMTT_2VjKar"
-    webhook=DiscordWebhook(url=url,username='Wallet Tracker')
+    url = "https://discord.com/api/webhooks/1019444725306101850/g56rjoqTQNWufyOzSqUC2iZ91VP-C1nz3dPtZoqaHYLx_UXRN1ZcQfPhqjMTT_2VjKar"
+    webhook = DiscordWebhook(url=url, username='Wallet Tracker')
     embed = DiscordEmbed(
-            description="Price: " + str(df['market_place_state'][0]['price']) + "",
-            title=str(df['project_name'][0])
-            )
+        description="Price: " + str(df['market_place_state'][0]['price']) + "",
+        title=str(df['project_name'][0])
+    )
     embed.set_image(url=str(df['meta_data_img'][0]))
-    embed.add_embed_field(name='Link', value="https://hyperspace.xyz/token/"+str(df['token_address'][0])+"")
+    embed.add_embed_field(
+        name='Link', value="https://hyperspace.xyz/token/"+str(df['token_address'][0])+"")
     webhook.add_embed(embed)
-    response=webhook.execute()
+    response = webhook.execute()
 
-def start(previousAddress):
-    df=requestJson()
-    check, df2, prevAddress=checkForNewBuy(previousAddress)
+
+def start(wallet, previousAddress):
+    df = requestJson(wallet)
+    check, df2, prevAddress = checkForNewBuy(wallet, previousAddress)
     if check:
         createWebhook(df2)
     else:
         pass
     return prevAddress
 
-def test():
-    df=requestJson()
+
+def test(address):
+    df = requestJson(address)
     createWebhook(df)
     return df['token_address'][0]
