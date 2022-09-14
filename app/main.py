@@ -22,7 +22,7 @@ print("Server is running...")
 
 
 @app.route('/')
-def main():
+def run():
     print("Checking...")
     for i in range(len(trackers)):
         trackers[i].previousAddress = wt.start(trackers[i].wallet,
