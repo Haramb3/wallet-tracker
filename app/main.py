@@ -30,4 +30,4 @@ def main():
                                                    trackers[i].previousAddress)
         # wt.test()
         time.sleep(60)
-    return 'Server Stopped.'
+    return "<h1>WALLET TRACKER IS WORKING...</h1>"
