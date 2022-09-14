@@ -27,4 +27,5 @@ def main():
     for i in range(len(trackers)):
         trackers[i].previousAddress = wt.start(trackers[i].wallet,
                                                trackers[i].previousAddress)
-    # wt.test()    return "<h1>WALLET TRACKER IS WORKING...</h1>"
+    # wt.test()    
+    return "<h1>WALLET TRACKER IS WORKING...</h1>"
